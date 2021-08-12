@@ -34,6 +34,8 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import { useEffect, useState } from "react";
 import Login from "./pages/Login";
+import Chats from "./pages/Chats";
+import ChatRoom from "pages/ChatRoom";
 
 const App: React.FC = () => {
   // we check local storage for auth keys to determine if we should render the app or the login page
@@ -52,8 +54,11 @@ const App: React.FC = () => {
             <Route exact path="/tab2">
               <Tab2 />
             </Route>
-            <Route path="/tab3">
-              <Tab3 />
+            <Route exact path="/chat">
+              <Chats />
+            </Route>
+            <Route exact path="/chat/:id">
+              <ChatRoom />
             </Route>
             <Route exact path="/">
               <Redirect to="/tab1" />
@@ -68,11 +73,11 @@ const App: React.FC = () => {
               <IonIcon icon={ellipse} />
               <IonLabel>Tab 2</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="tab3" href="/tab3">
+            <IonTabButton tab="tab3" href="/chat">
               <IonIcon icon={square} />
-              <IonLabel>Tab 3</IonLabel>
+              <IonLabel>Messenger</IonLabel>
             </IonTabButton>
-            <IonTabButton>
+            {/* <IonTabButton>
               <button
                 onClick={() => {
                   localStorage.clear();
@@ -82,7 +87,7 @@ const App: React.FC = () => {
               >
                 Logout
               </button>
-            </IonTabButton>
+            </IonTabButton> */}
           </IonTabBar>
         </IonTabs>
       </IonReactRouter>
