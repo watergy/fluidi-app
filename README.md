@@ -1,4 +1,4 @@
-# Iris
+# Fluidi
 Fluidi is an audio social experience. Fluidi is a fork of https://github.com/irislib/iris-messenger, with some changes to create unique user experience.
 * No phone number or signup required. Just type in your name or alias and go!
 * Secure: It's open source. Users can validate that big brother doesn't read your private messages.

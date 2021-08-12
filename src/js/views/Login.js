@@ -1,18 +1,18 @@
-import Helpers from '../Helpers.js';
-import { html } from 'htm/preact';
-import State from '../State.js';
-import { translate as t } from '../Translation.js';
-import LanguageSelector from '../components/LanguageSelector.js';
-import QRScanner from '../QRScanner.js';
-import Session from '../Session.js';
-import { Component } from 'preact';
-import Gun from 'gun';
+import Helpers from "../Helpers.js";
+import { html } from "htm/preact";
+import State from "../State.js";
+import { translate as t } from "../Translation.js";
+import LanguageSelector from "../components/LanguageSelector.js";
+import QRScanner from "../QRScanner.js";
+import Session from "../Session.js";
+import { Component } from "preact";
+import Gun from "gun";
 
-import logo from '../../assets/img/android-chrome-192x192.png';
+import logo from "../../assets/img/cover.png";
 
 class Login extends Component {
   componentDidMount() {
-    const el = document.getElementById('login-form-name');
+    const el = document.getElementById("login-form-name");
     el && el.focus();
   }
 
@@ -22,82 +22,136 @@ class Login extends Component {
     } else {
       QRScanner.startPrivKeyQRScanner().then(Session.login);
     }
-    this.setState({showScanPrivKey: !this.state.showScanPrivKey});
+    this.setState({ showScanPrivKey: !this.state.showScanPrivKey });
   }
 
   onPastePrivKey(event) {
     const val = event.target.value;
-    if (!val.length) { return; }
+    if (!val.length) {
+      return;
+    }
     try {
       let k = JSON.parse(val);
       Session.login(k);
-      event.target.value = '';
+      event.target.value = "";
     } catch (e) {
-      console.error('Login with key', val, 'failed:', e);
+      console.error("Login with key", val, "failed:", e);
     }
   }
 
   showCreateAccount(e) {
     e.preventDefault();
     QRScanner.cleanupScanner();
-    this.setState({showSwitchAccount: false});
+    this.setState({ showSwitchAccount: false });
   }
 
   onLoginFormSubmit(e) {
     e.preventDefault();
-    let name = document.getElementById('login-form-name').value || Helpers.generateName();
-    Gun.SEA.pair().then(k => {
+    let name =
+      document.getElementById("login-form-name").value ||
+      Helpers.generateName();
+    Gun.SEA.pair().then((k) => {
       Session.login(k);
-      State.public.user().get('profile').get('name').put(name);
+      State.public.user().get("profile").get("name").put(name);
       Session.createChatLink();
-      State.local.get('noFollows').put(true);
-      State.local.get('noFollowers').put(true);
-      State.local.get('filters').get('group').put('follows');
-      this.base.style = 'display:none';
+      State.local.get("noFollows").put(true);
+      State.local.get("noFollowers").put(true);
+      State.local.get("filters").get("group").put("follows");
+      this.base.style = "display:none";
     });
   }
 
   onNameChange(event) {
     if (event.target.value.indexOf('"priv"') !== -1) {
       this.onPastePrivKey(event);
-      event.target.value = '';
+      event.target.value = "";
     }
   }
 
   renderExistingAccountLogin() {
-    return html`<input id="paste-privkey" autofocus onInput=${e => this.onPastePrivKey(e)} placeholder="${t('paste_private_key')}"/>
+    return html`<input
+        id="paste-privkey"
+        autofocus
+        onInput=${(e) => this.onPastePrivKey(e)}
+        placeholder="${t("paste_private_key")}"
+      />
       <p>
-        <button id="scan-privkey-btn" onClick=${e => this.toggleScanPrivKey(e)}>${t('scan_private_key_qr_code')}</button>
+        <button
+          id="scan-privkey-btn"
+          onClick=${(e) => this.toggleScanPrivKey(e)}
+        >
+          ${t("scan_private_key_qr_code")}
+        </button>
       </p>
       <p>
-        <video id="privkey-qr-video" width="320" height="320" style="object-fit: cover;" class=${this.state.showScanPrivKey ? '':'hidden'}></video>
-      </p>
-    `;
+        <video
+          id="privkey-qr-video"
+          width="320"
+          height="320"
+          style="object-fit: cover;"
+          class=${this.state.showScanPrivKey ? "" : "hidden"}
+        ></video>
+      </p> `;
   }
 
   render() {
     return html`<section id="login">
       <div id="login-content">
-        ${!this.state.showSwitchAccount ? html`
-          <form id="login-form" autocomplete="off" onSubmit=${e => this.onLoginFormSubmit(e)}>
-            <div id="create-account">
-              <img width="86" height="86" src=${logo} alt="Iris"/>
-              <h1>Iris</h1>
-              <input onInput=${e => this.onNameChange(e)} autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="off" id="login-form-name" type="text" name="name" placeholder="${t('whats_your_name')}"/>
-              <p><button id="sign-up" type="submit">${t('new_user_go')}</button></p>
-              <br/>
-              <p><a href="#" id="show-existing-account-login" onClick=${() => this.setState({showSwitchAccount: true})}>${t('already_have_an_account')}</a></p>
-              <p>
-                <${LanguageSelector}/>
-              </p>
-            </div>
-          </form>
-        `:html`
-          <div id="existing-account-login">
-            <p><a href="#" id="show-create-account" onClick=${e => this.showCreateAccount(e)}>> ${t('back')}</a></p>
-            ${this.renderExistingAccountLogin()}
-          </div>
-        `}
+        ${!this.state.showSwitchAccount
+          ? html`
+              <form
+                id="login-form"
+                autocomplete="off"
+                onSubmit=${(e) => this.onLoginFormSubmit(e)}
+              >
+                <div id="create-account">
+                  <img width="86" height="86" src=${logo} alt="Fluidi" />
+                  <h1>Fluidi</h1>
+                  <input
+                    onInput=${(e) => this.onNameChange(e)}
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="sentences"
+                    spellcheck="off"
+                    id="login-form-name"
+                    type="text"
+                    name="name"
+                    placeholder="${t("whats_your_name")}"
+                  />
+                  <p>
+                    <button id="sign-up" type="submit">
+                      ${t("new_user_go")}
+                    </button>
+                  </p>
+                  <br />
+                  <p>
+                    <a
+                      href="#"
+                      id="show-existing-account-login"
+                      onClick=${() =>
+                        this.setState({ showSwitchAccount: true })}
+                      >${t("already_have_an_account")}</a
+                    >
+                  </p>
+                  <p>
+                    <${LanguageSelector} />
+                  </p>
+                </div>
+              </form>
+            `
+          : html`
+              <div id="existing-account-login">
+                <p>
+                  <a
+                    href="#"
+                    id="show-create-account"
+                    onClick=${(e) => this.showCreateAccount(e)}
+                    >> ${t("back")}</a
+                  >
+                </p>
+                ${this.renderExistingAccountLogin()}
+              </div>
+            `}
       </div>
     </section>`;
   }
@@ -109,5 +163,5 @@ class ExistingAccountLogin extends Login {
   }
 }
 
-export {ExistingAccountLogin};
+export { ExistingAccountLogin };
 export default Login;
