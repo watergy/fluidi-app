@@ -12,7 +12,7 @@ const APPLICATIONS = [
   { url: "/", text: t("home"), icon: Icons.home },
   { url: "/media", text: t("media"), icon: Icons.play },
   { url: "/chat", text: t("messages"), icon: Icons.chat },
-  { url: "/store", text: t("market"), icon: Icons.store },
+  // { url: "/store", text: t("market"), icon: Icons.store },
   { url: "/contacts", text: t("contacts"), icon: Icons.user },
   { url: "/settings", text: t("settings"), icon: Icons.settings },
   { url: "/explorer", text: t("explorer"), icon: Icons.folder },
