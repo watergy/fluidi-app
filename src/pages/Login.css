@@ -1,0 +1,10 @@
+.login-form {
+  position: absolute;
+  bottom: 50%;
+  width: 100%;
+  text-align: center;
+}
+
+.login-btn {
+  width: 100%;
+}
