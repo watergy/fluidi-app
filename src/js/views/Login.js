@@ -8,8 +8,6 @@ import Session from "../Session.js";
 import { Component } from "preact";
 import Gun from "gun";
 
-import logo from "../../assets/img/cover.png";
-
 class Login extends Component {
   componentDidMount() {
     const el = document.getElementById("login-form-name");
@@ -105,7 +103,6 @@ class Login extends Component {
                 onSubmit=${(e) => this.onLoginFormSubmit(e)}
               >
                 <div id="create-account">
-                  <img width="86" height="86" src=${logo} alt="Fluidi" />
                   <h1>Fluidi</h1>
                   <input
                     onInput=${(e) => this.onNameChange(e)}
