@@ -19,11 +19,11 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "paths": {
-      "gun": ["./types/gun"]
-    },
+    "baseUrl": "./src",
+    "typeRoots": ["./types", "node_modules/@types"],
   },
   "include": [
     "src"
-  ]
+  ],
+  "exclude": ["src/types"]
 }
