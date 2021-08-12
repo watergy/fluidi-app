@@ -7,7 +7,7 @@ Fluidi is an audio social experience. Fluidi is a fork of https://github.com/iri
 ![Screenshot](screenshot.png)
 
 ## Use
-Browser application - https://chat.fluidi.xyz/
+Browser application - https://www.fluidi.xyz/
 
 ## Develop
 ``` bash
