@@ -1,7 +1,15 @@
 import Gun from "gun";
+import { IGunChainReference } from "gun/types/chain";
 import iris from "iris-lib";
 
-const State: any = {
+interface IState {
+  init: (publicOpts: any) => void;
+  public: IGunChainReference;
+  local: IGunChainReference;
+}
+
+// @ts-ignore
+const State: IState = {
   init(publicOpts: any) {
     Gun.log.off = true;
     const o = Object.assign(
@@ -13,6 +21,7 @@ const State: any = {
       publicOpts
     );
     this.public = Gun(o);
+    // @ts-ignore
     this.local = Gun({
       peers: [],
       file: "State.local",

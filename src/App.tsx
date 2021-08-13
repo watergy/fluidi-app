@@ -34,13 +34,21 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import Auth from "./pages/Auth";
 import State from "./services/State";
+import Session from "./services/Session";
+import PeerManager from "./services/PeerManager";
+import { useEffect, useState } from "react";
 
-State.init();
+State.init({});
+Session.init({ autologin: window.location.pathname.length > 2 });
+PeerManager.init();
 
 const App: React.FC = () => {
-  const isLoggedIn = localStorage.getItem("authKeys");
-
-  if (!isLoggedIn) return <Auth />;
+  useEffect(() => {
+    // set listeners for some state changes
+    State.local.get("loggedIn").on((ack) => {
+      console.log(ack);
+    });
+  }, []);
 
   return (
     <IonApp>

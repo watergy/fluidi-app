@@ -29,6 +29,7 @@ const Auth = () => {
             e.preventDefault();
             Gun.SEA.pair((ack) => {
               Session.login(ack);
+              // @ts-ignore
               State.public.user().get("profile").get("name").put(alias);
               Session.createChatLink();
             });
