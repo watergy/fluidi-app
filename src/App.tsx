@@ -33,6 +33,9 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import Auth from "./pages/Auth";
+import State from "./services/State";
+
+State.init();
 
 const App: React.FC = () => {
   const isLoggedIn = localStorage.getItem("authKeys");

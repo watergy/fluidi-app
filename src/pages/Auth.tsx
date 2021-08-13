@@ -8,7 +8,10 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import Gun from "gun";
 import { useState } from "react";
+import Session from "../services/Session";
+import State from "../services/State";
 import "./Auth.css";
 
 const Auth = () => {
@@ -24,6 +27,11 @@ const Auth = () => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            Gun.SEA.pair((ack) => {
+              Session.login(ack);
+              State.public.user().get("profile").get("name").put(alias);
+              Session.createChatLink();
+            });
           }}
         >
           <IonLabel>What is your name?</IonLabel>
