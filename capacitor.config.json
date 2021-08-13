@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "fluidi",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
