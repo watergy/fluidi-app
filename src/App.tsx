@@ -10,9 +10,6 @@ import {
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { ellipse, square, triangle } from "ionicons/icons";
-import Tab1 from "./pages/Tab1";
-import Tab2 from "./pages/Tab2";
-import Tab3 from "./pages/Tab3";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -37,35 +34,45 @@ import State from "./services/State";
 import Session from "./services/Session";
 import PeerManager from "./services/PeerManager";
 import { useEffect, useState } from "react";
+import Droplets from "./pages/Droplets";
+import Messages from "./pages/Messages";
+import Profile from "./pages/Profile";
+import Waves from "./pages/Waves";
 
 State.init({});
 Session.init({ autologin: window.location.pathname.length > 2 });
 PeerManager.init();
 
 const App: React.FC = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
     // set listeners for some state changes
-    State.local.get("loggedIn").on((ack) => {
-      console.log(ack);
+    State.local.get("loggedIn").on((ack: any) => {
+      setLoggedIn(Boolean(ack)); // in case we get some other data type for some reason. shouldn't happen. probably would be fine even if it did beacause it would be truthy. why risk it? easier to just wrap it in a Boolean constructor and write this comment
     });
   }, []);
+
+  if (!loggedIn) return <Auth />;
 
   return (
     <IonApp>
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
-            <Route exact path="/tab1">
-              <Tab1 />
+            <Route exact path="/droplets">
+              <Droplets />
             </Route>
-            <Route exact path="/tab2">
-              <Tab2 />
+            <Route exact path="/waves">
+              <Waves />
             </Route>
-            <Route path="/tab3">
-              <Tab3 />
+            <Route exact path="/messages">
+              <Messages />
+            </Route>
+            <Route exact path="/profile">
+              <Profile />
             </Route>
             <Route exact path="/">
-              <Redirect to="/tab1" />
+              <Redirect to="/droplets" />
             </Route>
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
