@@ -1,3 +1,5 @@
+// https://developers.google.com/web/fundamentals/media/recording-audio
+
 import { useState } from "react";
 import {
   IonCard,
@@ -9,76 +11,101 @@ import {
   IonItem,
   IonTextarea,
 } from "@ionic/react";
-import { mic, micOff, micOutline, pauseOutline, play } from "ionicons/icons";
-// @ts-ignore
+import {
+  mic,
+  micOff,
+  micOffOutline,
+  micOutline,
+  pauseOutline,
+  play,
+} from "ionicons/icons";
+//  @ts-ignore
 import AudioSpectrum from "react-audio-spectrum";
-import AudioReactRecorder, { RecordState } from "audio-react-recorder";
+// @ts-ignore
+// import AudioReactRecorder, { RecordState } from "audio-react-recorder";
+import { Recorder } from "react-voice-recorder";
+import "react-voice-recorder/dist/index.css";
+import State from "../services/State";
 
 const ComposeDroplet = () => {
   // TODO: make a reducer for the form? maybe..
   const [recording, setRecording] = useState(false);
-  const [blobUrl, setBloblUrl] = useState("");
   const [title, setTitle] = useState("");
   const [tags, setTags]: any = useState([]);
   const [tagText, setTagText] = useState("");
   const [audioFile, setAudioFile]: any = useState(null);
   const [errorText, setErrorText] = useState("");
-  const [recordState, setRecordState] = useState(null);
+  const [audioSrc, setAudioSrc]: any = useState("");
+  const [recorder, setRecorder] = useState<MediaRecorder>();
+  //   const [recordState, setRecordState] = useState(RecordState.STOP);
+  const [audioDetails, setAudioDetails] = useState({
+    url: null,
+    blob: null,
+    chunks: null,
+    duration: { h: 0, m: 0, s: 0 },
+  });
 
   const startRecording = (): void => {
-    setRecordState(RecordState.START);
-    // recorder
-    //   .start()
-    //   .then(() => {
-    //     setRecording(true);
-    //   })
-    //   .catch(console.error);
+    // setRecordState(RecordState.START);
   };
 
-  const stopRecording = (): void => {
-    setRecordState(RecordState.STOP);
-    // recorder
-    //   .stop()
-    //   .getMp3()
-    //   .then(([buffer, blob]: any) => {
-    //     const file = new File(buffer, "me-at-thevoice.mp3", {
-    //       type: blob.type,
-    //       lastModified: Date.now(),
-    //     });
-    //     // now that we have the file, save it in state while the user finishes composing
-    //     //   setAudioFile(file);
-    //     setRecording(false);
-    //   })
-    //   .catch((err: string) => {
-    //     console.error(err);
-    //     setErrorText(err);
-    //   });
+  const stopRecording = (data: any): void => {
+    // setRecordState(RecordState.STOP);
+    console.log(data);
+    setAudioDetails(data);
+  };
+
+  const handleAudioUpload = (file: any) => {
+    console.log(file);
+  };
+  const handleReset = () => {
+    const reset = {
+      url: null,
+      blob: null,
+      chunks: null,
+      duration: {
+        h: 0,
+        m: 0,
+        s: 0,
+      },
+    };
+    setAudioDetails(reset);
   };
 
   return (
     <IonCard>
+      {/* <AudioReactRecorder state={recordState} onStop={stopRecording} /> */}
+      <Recorder
+        record={true}
+        title={"New recording"}
+        audioURL={audioDetails.url}
+        showUIAudio
+        handleAudioStop={(data: any) => stopRecording(data)}
+        handleAudioUpload={(data: any) => handleAudioUpload(data)}
+        handleReset={() => handleReset()}
+        mimeTypeToUseWhenRecording={`audio/mp3`} // For specific mimetype.
+      />
       <IonButton
-        color={recording ? "warning" : "secondary"}
+        color={recording ? "danger" : "secondary"}
         onClick={recording ? stopRecording : startRecording}
       >
-        <IonIcon icon={micOutline} />
+        <IonIcon icon={recording ? micOutline : micOffOutline} />
         {recording ? "red means recording" : "not recording"}
       </IonButton>
-      {recording ? (
-        <IonIcon icon={mic} size="large" />
-      ) : (
-        <IonIcon icon={micOff} size="large" />
-      )}
-      <br />
-      {audioFile && (
+      {/* <h1>
+        note, audio recording is not currently enabled. coming soon. for now,
+        please click the button below and upload an audio file
+      </h1> */}
+
+      {/* {audioFile && (
         <AudioSpectrum
           height={200}
           width={300}
           audioElement={new Audio(audioFile)}
         />
-      )}
+      )} */}
+
       <br />
-      <AudioReactRecorder state={recordState} onStop={stopRecording} />
       <IonLabel>Title</IonLabel>
       <IonInput
         value={title}
@@ -109,6 +136,18 @@ const ComposeDroplet = () => {
           }
         }}
       />
+      <IonButton
+        onClick={(e) => {
+          e.preventDefault();
+          // @ts-ignore
+          State.local
+            .get("dropletss")
+            //@ts-ignore
+            .set({ title, tags, author: "me", createdAt: Date.now() });
+        }}
+      >
+        Click here to submit your droplet
+      </IonButton>
       <IonTextarea value={errorText} />
     </IonCard>
   );

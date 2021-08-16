@@ -27,6 +27,14 @@
   </head>
 
   <body>
+    <script>
+      // load this bundle only for browsers without MediaRecorder support
+      if (!window.MediaRecorder) {
+        document.write(
+          decodeURI('%3Cscript defer src="/polyfill.js">%3C/script>')
+        )
+      }
+    </script>
     <div id="root"></div>
   </body>
 

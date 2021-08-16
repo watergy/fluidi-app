@@ -20,97 +20,30 @@ import {
 } from "@ionic/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ComposeDroplet from "../components/ComposeDroplet";
+import State from "../services/State";
 
 interface Droplet {
   id: string;
   title: string;
   author: string;
   createdAt: number;
-  tags: string[];
+  tags?: string[];
+  audioUrl?: string;
 }
 
 // TODO: a better job at declaring type definitions
 
 const initialState = {
-  droplets: [
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-    {
-      id: "1",
-      title: "my first droplet",
-      tags: ["fun", "strange", "loud"],
-      author: "chance",
-      createdAt: Date.now(),
-    },
-  ],
+  droplets: [],
+  // droplets: [
+  //   {
+  //     id: "1",
+  //     title: "my first droplet",
+  //     tags: ["fun", "strange", "loud"],
+  //     author: "chance",
+  //     createdAt: Date.now(),
+  //   },
+  // ],
 };
 
 function reducer(state: any, action: any) {
@@ -122,7 +55,22 @@ function reducer(state: any, action: any) {
 
 const Droplets = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    State.local
+      .get("dropletss")
+      .map()
+      .on((ack: any) => {
+        console.log(ack);
+        dispatch({
+          type: "addDroplet",
+          payload: {
+            title: ack.title,
+            createdAt: ack.createdAt,
+            author: ack.author,
+          },
+        });
+      });
+  }, []);
 
   const getMoreDroplets = () => {
     return state.droplets;
@@ -160,7 +108,7 @@ const Droplets = () => {
   );
 };
 
-function Droplet({ title, author, createdAt, tags }: Droplet) {
+function Droplet({ title, author, createdAt, tags, audioUrl = "" }: Droplet) {
   return (
     <IonItem>
       <IonCard>
@@ -168,7 +116,8 @@ function Droplet({ title, author, createdAt, tags }: Droplet) {
           <IonCardTitle>{title}</IonCardTitle>
         </IonCardHeader>
         <IonCardContent>{author}</IonCardContent>
-        <IonNote>{tags.map((tag) => `${tag}, `)}</IonNote>
+        {}
+        <IonNote>{tags?.map((tag) => `${tag}, `)}</IonNote>
       </IonCard>
     </IonItem>
   );
