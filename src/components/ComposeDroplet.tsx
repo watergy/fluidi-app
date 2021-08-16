@@ -10,6 +10,7 @@ import {
   IonList,
   IonItem,
   IonTextarea,
+  IonRouterLink,
 } from "@ionic/react";
 import {
   mic,
@@ -26,6 +27,7 @@ import AudioSpectrum from "react-audio-spectrum";
 import { Recorder } from "react-voice-recorder";
 import "react-voice-recorder/dist/index.css";
 import State from "../services/State";
+import VoiceRecorder from "./AudioRecorder";
 
 const ComposeDroplet = () => {
   // TODO: make a reducer for the form? maybe..
@@ -38,13 +40,6 @@ const ComposeDroplet = () => {
   const [audioSrc, setAudioSrc]: any = useState("");
   const [recorder, setRecorder] = useState<MediaRecorder>();
   //   const [recordState, setRecordState] = useState(RecordState.STOP);
-  const [audioDetails, setAudioDetails] = useState({
-    url: null,
-    blob: null,
-    chunks: null,
-    duration: { h: 0, m: 0, s: 0 },
-  });
-
   const startRecording = (): void => {
     // setRecordState(RecordState.START);
   };
@@ -52,39 +47,12 @@ const ComposeDroplet = () => {
   const stopRecording = (data: any): void => {
     // setRecordState(RecordState.STOP);
     console.log(data);
-    setAudioDetails(data);
-  };
-
-  const handleAudioUpload = (file: any) => {
-    console.log(file);
-  };
-  const handleReset = () => {
-    const reset = {
-      url: null,
-      blob: null,
-      chunks: null,
-      duration: {
-        h: 0,
-        m: 0,
-        s: 0,
-      },
-    };
-    setAudioDetails(reset);
   };
 
   return (
     <IonCard>
       {/* <AudioReactRecorder state={recordState} onStop={stopRecording} /> */}
-      <Recorder
-        record={true}
-        title={"New recording"}
-        audioURL={audioDetails.url}
-        showUIAudio
-        handleAudioStop={(data: any) => stopRecording(data)}
-        handleAudioUpload={(data: any) => handleAudioUpload(data)}
-        handleReset={() => handleReset()}
-        mimeTypeToUseWhenRecording={`audio/mp3`} // For specific mimetype.
-      />
+
       <IonButton
         color={recording ? "danger" : "secondary"}
         onClick={recording ? stopRecording : startRecording}
@@ -105,6 +73,7 @@ const ComposeDroplet = () => {
         />
       )} */}
 
+      <VoiceRecorder />
       <br />
       <IonLabel>Title</IonLabel>
       <IonInput
