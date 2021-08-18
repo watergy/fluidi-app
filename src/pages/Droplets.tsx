@@ -56,7 +56,7 @@ function reducer(state: any, action: any) {
 const Droplets = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
-    State.local
+    State.public
       .get("dropletss")
       .map()
       .on((ack: any) => {
@@ -113,7 +113,7 @@ function Droplet({ title, author, createdAt, tags, audioUrl = "" }: Droplet) {
     <IonItem>
       <IonCard>
         <IonCardHeader>
-          <IonCardTitle>{title}</IonCardTitle>
+          <IonText>{title}</IonText>
         </IonCardHeader>
         <IonCardContent>{author}</IonCardContent>
         {}

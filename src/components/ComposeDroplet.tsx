@@ -102,7 +102,7 @@ const ComposeDroplet = () => {
         onClick={(e) => {
           e.preventDefault();
           // @ts-ignore
-          State.local
+          State.public
             .get("dropletss")
             //@ts-ignore
             .set({ title, tags, author: "me", createdAt: Date.now() });
