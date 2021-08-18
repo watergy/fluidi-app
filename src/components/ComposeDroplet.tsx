@@ -53,13 +53,6 @@ const ComposeDroplet = () => {
     <IonCard>
       {/* <AudioReactRecorder state={recordState} onStop={stopRecording} /> */}
 
-      <IonButton
-        color={recording ? "danger" : "secondary"}
-        onClick={recording ? stopRecording : startRecording}
-      >
-        <IonIcon icon={recording ? micOutline : micOffOutline} />
-        {recording ? "red means recording" : "not recording"}
-      </IonButton>
       {/* <h1>
         note, audio recording is not currently enabled. coming soon. for now,
         please click the button below and upload an audio file

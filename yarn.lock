@@ -12845,6 +12845,11 @@ watchpack@^1.7.4:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"
 
+wave-visualizer@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/wave-visualizer/-/wave-visualizer-1.0.6.tgz#16ba0d6445b9cbb6f7e62c4ad669af46cd011c39"
+  integrity sha512-2vTpXAc60qE7UNY0k0i7ty7sbZXLkOXivxNN7RRz1+G9STzPCfoKrda8rFM5f/vRw6JmXu8qV5CTfAAQrnlmHg==
+
 wbuf@^1.1.0, wbuf@^1.7.3:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/wbuf/-/wbuf-1.7.3.tgz#c1d8d149316d3ea852848895cb6a0bfe887b87df"
