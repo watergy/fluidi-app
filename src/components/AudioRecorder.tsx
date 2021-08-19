@@ -31,6 +31,7 @@ const AudioRecorder: React.FC = () => {
     // convert the data into a buffer and save it to state.
     const buffer = Buffer.from(new ArrayBuffer(data));
     setAudioBuffer(buffer);
+    console.log(data);
     setRecord(window.URL.createObjectURL(data));
   });
 
@@ -54,7 +55,7 @@ const AudioRecorder: React.FC = () => {
   const startLeeching = (magnetLink: string) => {
     client.add(magnetLink, {}, (torrent) => {
       console.log("started leeching", torrent);
-      setLeechingTorrent(torrent.files[0].getBlobURL);
+      setLeechingTorrent(window.URL.createObjectURL(torrent.files[0].getBlob));
     });
   };
 
