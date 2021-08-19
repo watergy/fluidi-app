@@ -55,7 +55,9 @@ const AudioRecorder: React.FC = () => {
   const startLeeching = (magnetLink: string) => {
     client.add(magnetLink, {}, (torrent) => {
       console.log("started leeching", torrent);
-      setLeechingTorrent(window.URL.createObjectURL(torrent.files[0].getBlob));
+      setLeechingTorrent(
+        window.URL.createObjectURL(torrent.files[0].getBlob())
+      );
     });
   };
 
