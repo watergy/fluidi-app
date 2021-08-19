@@ -39,15 +39,7 @@ const ComposeDroplet = () => {
   const [errorText, setErrorText] = useState("");
   const [audioSrc, setAudioSrc]: any = useState("");
   const [recorder, setRecorder] = useState<MediaRecorder>();
-  //   const [recordState, setRecordState] = useState(RecordState.STOP);
-  const startRecording = (): void => {
-    // setRecordState(RecordState.START);
-  };
-
-  const stopRecording = (data: any): void => {
-    // setRecordState(RecordState.STOP);
-    console.log(data);
-  };
+  const [magnetLink, setMagnetLink] = useState<string>();
 
   return (
     <IonCard>
@@ -66,7 +58,7 @@ const ComposeDroplet = () => {
         />
       )} */}
 
-      <VoiceRecorder />
+      <VoiceRecorder setMagnetLink={setMagnetLink} />
       <br />
       <IonLabel>Title</IonLabel>
       <IonInput
@@ -102,10 +94,18 @@ const ComposeDroplet = () => {
         onClick={(e) => {
           e.preventDefault();
           // @ts-ignore
-          State.public
-            .get("dropletss")
+          State.public.get("dropletss").set({
             //@ts-ignore
-            .set({ title, tags, author: "me", createdAt: Date.now() });
+            title,
+            //@ts-ignore
+            tags,
+            //@ts-ignore
+            author: "me",
+            //@ts-ignore
+            createdAt: Date.now(),
+            //@ts-ignore
+            magnetLink,
+          });
         }}
       >
         Click here to submit your droplet

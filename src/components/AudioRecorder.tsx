@@ -1,4 +1,3 @@
-// @ts-nocheck
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useVoiceRecorder } from "use-voice-recorder";
@@ -22,16 +21,18 @@ import WebTorrent from "webtorrent";
     automatically? Will need to test and find out.
 */
 
-const AudioRecorder: React.FC = () => {
+interface AudioRecorderProps {
+  setMagnetLink: (magnetLink: string) => void;
+}
+
+const AudioRecorder = ({ setMagnetLink }: AudioRecorderProps) => {
   const [record, setRecord] = useState<string>("");
   const [audioBuffer, setAudioBuffer] = useState<Buffer>();
   const [leechingTorrent, setLeechingTorrent] = useState<string>();
   const [dspeed, setDspeed] = useState(0);
   const { isRecording, stop, start } = useVoiceRecorder(async (data) => {
     // convert the data into a buffer and save it to state.
-    // const buffer = Buffer.from(new ArrayBuffer(data));
-    // setAudioBuffer(buffer);
-    setAudioBuffer(await data.arrayBuffer());
+    setAudioBuffer(Buffer.from(await data.arrayBuffer()));
     console.log(data);
     setRecord(window.URL.createObjectURL(data));
   });
@@ -47,10 +48,10 @@ const AudioRecorder: React.FC = () => {
     if (!audioBuffer) return;
     // client.seed("", {}, (torrent) => {});
     console.log(audioBuffer);
-    client.seed(Buffer(audioBuffer), { name: "Hello" }, (torrent) => {
+    client.seed(audioBuffer, {}, (torrent) => {
       console.log("torrent is created and seeding!", torrent);
       console.log("magnet link\n", torrent.magnetURI);
-      alert(torrent.magnetURI);
+      setMagnetLink(torrent.magnetURI);
     });
   };
 
@@ -94,33 +95,3 @@ const AudioRecorder: React.FC = () => {
 };
 
 export default AudioRecorder;
-
-// import { IonButton, IonCard } from "@ionic/react";
-// import { useEffect, useState } from "react";
-
-// const AudioRecorder = () => {
-//   const [audioSrc, setAudioSrc] = useState("");
-
-//   return (
-
-//     // NOTE: the below works to upload a file
-//     // <IonCard>
-//     //   <input
-//     //     type="file"
-//     //     accept="audio"
-//     //     capture
-//     //     onChange={(e) => {
-//     //       const file = e.target.files![0];
-//     //       console.log(file);
-//     //       setAudioSrc(URL.createObjectURL(file));
-//     //       console.log(URL.createObjectURL(file));
-//     //     }}
-//     //   />
-//     //   <audio controls src={audioSrc}>
-//     //     <source src={audioSrc} type="audio/mp3" />
-//     //   </audio>
-//     // </IonCard>
-//   );
-// };
-
-// export default AudioRecorder;

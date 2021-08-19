@@ -28,22 +28,13 @@ interface Droplet {
   author: string;
   createdAt: number;
   tags?: string[];
-  audioUrl?: string;
+  magnetLink: string;
 }
 
 // TODO: a better job at declaring type definitions
 
 const initialState = {
   droplets: [],
-  // droplets: [
-  //   {
-  //     id: "1",
-  //     title: "my first droplet",
-  //     tags: ["fun", "strange", "loud"],
-  //     author: "chance",
-  //     createdAt: Date.now(),
-  //   },
-  // ],
 };
 
 function reducer(state: any, action: any) {
@@ -67,6 +58,7 @@ const Droplets = () => {
             title: ack.title,
             createdAt: ack.createdAt,
             author: ack.author,
+            magnetLink: ack.magnetLink,
           },
         });
       });
@@ -108,15 +100,17 @@ const Droplets = () => {
   );
 };
 
-function Droplet({ title, author, createdAt, tags, audioUrl = "" }: Droplet) {
+function Droplet({ title, author, createdAt, tags, magnetLink }: Droplet) {
   return (
     <IonItem>
       <IonCard>
         <IonCardHeader>
           <IonText>{title}</IonText>
         </IonCardHeader>
-        <IonCardContent>{author}</IonCardContent>
-        {}
+        <IonCardContent>
+          <IonText>{author}</IonText>
+          <IonText>{magnetLink}</IonText>
+        </IonCardContent>
         <IonNote>{tags?.map((tag) => `${tag}, `)}</IonNote>
       </IonCard>
     </IonItem>
