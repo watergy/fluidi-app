@@ -29,8 +29,9 @@ const AudioRecorder: React.FC = () => {
   const [dspeed, setDspeed] = useState(0);
   const { isRecording, stop, start } = useVoiceRecorder(async (data) => {
     // convert the data into a buffer and save it to state.
-    const buffer = Buffer.from(new ArrayBuffer(data));
-    setAudioBuffer(buffer);
+    // const buffer = Buffer.from(new ArrayBuffer(data));
+    // setAudioBuffer(buffer);
+    setAudioBuffer(await data.arrayBuffer());
     console.log(data);
     setRecord(window.URL.createObjectURL(data));
   });
@@ -45,7 +46,8 @@ const AudioRecorder: React.FC = () => {
   const startSeeding = () => {
     if (!audioBuffer) return;
     // client.seed("", {}, (torrent) => {});
-    client.seed(audioBuffer, {}, (torrent) => {
+    console.log(audioBuffer);
+    client.seed(Buffer(audioBuffer), { name: "Hello" }, (torrent) => {
       console.log("torrent is created and seeding!", torrent);
       console.log("magnet link\n", torrent.magnetURI);
       alert(torrent.magnetURI);
@@ -55,9 +57,9 @@ const AudioRecorder: React.FC = () => {
   const startLeeching = (magnetLink: string) => {
     client.add(magnetLink, {}, (torrent) => {
       console.log("started leeching", torrent);
-      setLeechingTorrent(
-        window.URL.createObjectURL(torrent.files[0].getBlob())
-      );
+      torrent.files[0].getBlob((err, blob) => {
+        setLeechingTorrent(window.URL.createObjectURL(blob));
+      });
     });
   };
 
