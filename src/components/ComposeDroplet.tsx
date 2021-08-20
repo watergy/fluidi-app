@@ -94,7 +94,7 @@ const ComposeDroplet = () => {
         onClick={(e) => {
           e.preventDefault();
           // @ts-ignore
-          State.public.get("dropletss").set({
+          State.public.get("dropletsss").set({
             //@ts-ignore
             title,
             //@ts-ignore
