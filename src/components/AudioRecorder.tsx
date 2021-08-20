@@ -23,18 +23,25 @@ import State from "../services/State";
 */
 
 interface AudioRecorderProps {
-  setAudioBuffer: (buffer: Buffer) => void;
+  setBase64: (base64: string) => void;
 }
 
-const AudioRecorder = ({ setAudioBuffer }: AudioRecorderProps) => {
+const AudioRecorder = ({ setBase64 }: AudioRecorderProps) => {
   const [record, setRecord] = useState<string>("");
   const [leechingTorrent, setLeechingTorrent] = useState<string>();
   const [dspeed, setDspeed] = useState(0);
   const { isRecording, stop, start } = useVoiceRecorder(async (data) => {
     // convert the data into a buffer and save it to state.
-    setAudioBuffer(Buffer.from(await data.arrayBuffer()));
-    console.log(data);
-    setRecord(window.URL.createObjectURL(data));
+    // setAudioBuffer(Buffer.from(await data.arrayBuffer()));
+    const reader = new window.FileReader();
+    reader.readAsDataURL(data);
+    reader.onloadend = () => {
+      let base64 = reader.result!;
+      base64 = String(base64).split(",")[1];
+      console.log(base64);
+      setBase64(base64);
+      setRecord(window.URL.createObjectURL(data));
+    };
   });
 
   const client = new WebTorrent();

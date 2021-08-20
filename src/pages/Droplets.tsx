@@ -19,9 +19,11 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { base64StringToBlob } from "blob-util";
 import ComposeDroplet from "../components/ComposeDroplet";
 import State from "../services/State";
 import WebTorrent from "webtorrent";
+import { Blob } from "node:buffer";
 
 interface Droplet {
   id: string;
@@ -29,7 +31,7 @@ interface Droplet {
   author: string;
   createdAt: number;
   tags?: string[];
-  magnetLink: string;
+  base64: string;
 }
 
 // TODO: a better job at declaring type definitions
@@ -50,7 +52,7 @@ const Droplets = () => {
 
   useEffect(() => {
     State.public
-      .get("fluiditest")
+      .get("fluiditestexp")
       .get("droplets")
       .map()
       .on((ack: any) => {
@@ -61,7 +63,7 @@ const Droplets = () => {
             title: ack.title,
             createdAt: ack.createdAt,
             author: ack.author,
-            magnetLink: ack.magnetLink,
+            base64: ack.base64,
           },
         });
       });
@@ -103,25 +105,23 @@ const Droplets = () => {
   );
 };
 
-function Droplet({ title, author, createdAt, tags, magnetLink }: Droplet) {
+function Droplet({ title, author, createdAt, tags, base64 }: Droplet) {
   const [audioUrl, setAudioUrl] = useState<string>();
-  const client = new WebTorrent();
-
-  const startLeeching = (magnetLink: string) => {
-    try {
-      client.add(magnetLink, {}, (torrent) => {
-        console.log("started leeching", torrent);
-        torrent.files[0].getBlob((err, blob) => {
-          setAudioUrl(window.URL.createObjectURL(blob));
-        });
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   useEffect(() => {
-    startLeeching(magnetLink);
+    // const reader = new window.FileReader();
+    // reader.readAsText(data);
+    // reader.onloadend = () => {
+    //   let base64 = reader.result!;
+    //   base64 = String(base64).split(",")[1];
+    //   console.log(base64);
+    //   setBase64(base64);
+    //   console.log(data);
+    //   setRecord(window.URL.createObjectURL(data));
+    // };
+    if (!base64) return;
+    const blob = base64StringToBlob(base64, "audio/wav");
+    setAudioUrl(window.URL.createObjectURL(blob));
   }, []);
 
   return (

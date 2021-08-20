@@ -1,6 +1,6 @@
 // https://developers.google.com/web/fundamentals/media/recording-audio
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IonCard,
   IonButton,
@@ -41,11 +41,16 @@ const ComposeDroplet = () => {
   const [audioSrc, setAudioSrc]: any = useState("");
   const [recorder, setRecorder] = useState<MediaRecorder>();
   const [audioBuffer, setAudioBuffer] = useState<Buffer>();
+  const [base64, setBase64] = useState<string>();
   const client = new WebTorrent();
+
+  useEffect(() => {
+    console.log(audioBuffer);
+  }, [audioBuffer]);
 
   return (
     <IonCard>
-      <VoiceRecorder setAudioBuffer={setAudioBuffer} />
+      <VoiceRecorder setBase64={setBase64} />
       <br />
       <IonLabel>Title</IonLabel>
       <IonInput
@@ -80,24 +85,24 @@ const ComposeDroplet = () => {
       <IonButton
         onClick={(e) => {
           e.preventDefault();
-          client.seed(audioBuffer!, {}, (torrent) => {
-            console.log("torrent is created and seeding!", torrent);
-            console.log("magnet link\n", torrent.magnetURI);
-            // @ts-ignore
-            State.public.get("fluiditest").get("droplets").set({
-              //@ts-ignore
-              title,
-              //@ts-ignore
-              tags,
-              //@ts-ignore
-              author: "me",
-              //@ts-ignore
-              createdAt: Date.now(),
-              //@ts-ignore
-              magnetLink: torrent?.magnetURI,
-            });
-            console.log("did it get here?");
+          // client.seed(audioBuffer!, {}, (torrent) => {
+          // console.log("torrent is created and seeding!", torrent);
+          // console.log("magnet link\n", torrent.magnetURI);
+          // @ts-ignore
+          State.public.get("fluiditestexp").get("droplets").set({
+            //@ts-ignore
+            title,
+            //@ts-ignore
+            tags,
+            //@ts-ignore
+            author: "me",
+            //@ts-ignore
+            createdAt: Date.now(),
+            //@ts-ignore
+            base64,
           });
+          console.log("did it get here?");
+          // });
         }}
       >
         Click here to submit your droplet
