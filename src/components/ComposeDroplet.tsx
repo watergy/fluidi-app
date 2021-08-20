@@ -84,23 +84,19 @@ const ComposeDroplet = () => {
             console.log("torrent is created and seeding!", torrent);
             console.log("magnet link\n", torrent.magnetURI);
             // @ts-ignore
-            try {
-              State.public.get("dropletsssss").set({
-                //@ts-ignore
-                title,
-                //@ts-ignore
-                tags,
-                //@ts-ignore
-                author: "me",
-                //@ts-ignore
-                createdAt: Date.now(),
-                //@ts-ignore
-                magnetLink: torrent.magnetURI,
-              });
-            } catch (err) {
-              console.error(err);
-              alert(err);
-            }
+            State.public.get("fluiditest").get("droplets").set({
+              //@ts-ignore
+              title,
+              //@ts-ignore
+              tags,
+              //@ts-ignore
+              author: "me",
+              //@ts-ignore
+              createdAt: Date.now(),
+              //@ts-ignore
+              magnetLink: torrent?.magnetURI,
+            });
+            console.log("did it get here?");
           });
         }}
       >
