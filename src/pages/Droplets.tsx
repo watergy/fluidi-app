@@ -50,7 +50,7 @@ const Droplets = () => {
 
   useEffect(() => {
     State.public
-      .get("dropletsss")
+      .get("dropletssss")
       .map()
       .on((ack: any) => {
         console.log(ack);

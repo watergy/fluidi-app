@@ -94,18 +94,23 @@ const ComposeDroplet = () => {
         onClick={(e) => {
           e.preventDefault();
           // @ts-ignore
-          State.public.get("dropletsss").set({
-            //@ts-ignore
-            title,
-            //@ts-ignore
-            tags,
-            //@ts-ignore
-            author: "me",
-            //@ts-ignore
-            createdAt: Date.now(),
-            //@ts-ignore
-            magnetLink,
-          });
+          try {
+            State.public.get("dropletssss").set({
+              //@ts-ignore
+              title,
+              //@ts-ignore
+              tags,
+              //@ts-ignore
+              author: "me",
+              //@ts-ignore
+              createdAt: Date.now(),
+              //@ts-ignore
+              magnetLink,
+            });
+          } catch (err) {
+            console.error(err);
+            alert(err);
+          }
         }}
       >
         Click here to submit your droplet
