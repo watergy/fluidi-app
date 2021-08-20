@@ -1,10 +1,7 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useVoiceRecorder } from "use-voice-recorder";
 import { IonButton, IonIcon } from "@ionic/react";
-import { recording, micOutline, micOffOutline } from "ionicons/icons";
-import WebTorrent from "webtorrent";
-import State from "../services/State";
+import { micOutline, micOffOutline } from "ionicons/icons";
 
 /*
     We will use WebTorrent for saving/retrieving our audio files.
@@ -28,8 +25,6 @@ interface AudioRecorderProps {
 
 const AudioRecorder = ({ setBase64 }: AudioRecorderProps) => {
   const [record, setRecord] = useState<string>("");
-  const [leechingTorrent, setLeechingTorrent] = useState<string>();
-  const [dspeed, setDspeed] = useState(0);
   const { isRecording, stop, start } = useVoiceRecorder(async (data) => {
     // convert the data into a buffer and save it to state.
     // setAudioBuffer(Buffer.from(await data.arrayBuffer()));
@@ -44,16 +39,8 @@ const AudioRecorder = ({ setBase64 }: AudioRecorderProps) => {
     };
   });
 
-  const client = new WebTorrent();
-
-  useEffect(() => {
-    console.log("SPEED CHANGED!");
-    setDspeed(client.downloadSpeed);
-  }, [client.downloadSpeed]);
-
   return (
     <div className={"container"}>
-      <h1>{dspeed}</h1>
       <audio id="audio_element" src={record} controls preload={"metadata"} />
 
       <IonButton

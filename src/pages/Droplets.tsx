@@ -64,6 +64,7 @@ const Droplets = () => {
             createdAt: ack.createdAt,
             author: ack.author,
             base64: ack.base64,
+            tags: ack.tags,
           },
         });
       });
@@ -95,7 +96,7 @@ const Droplets = () => {
           endMessage={<p>that's all!</p>}
         >
           <IonList>
-            {state.droplets.map((droplet: Droplet) => {
+            {[...new Set<Droplet>(state.droplets)].map((droplet: Droplet) => {
               return <Droplet {...droplet} />;
             })}
           </IonList>
@@ -105,7 +106,7 @@ const Droplets = () => {
   );
 };
 
-function Droplet({ title, author, createdAt, tags, base64 }: Droplet) {
+function Droplet({ title, author, createdAt, tags = [], base64 }: Droplet) {
   const [audioUrl, setAudioUrl] = useState<string>();
 
   useEffect(() => {
@@ -119,6 +120,7 @@ function Droplet({ title, author, createdAt, tags, base64 }: Droplet) {
     //   console.log(data);
     //   setRecord(window.URL.createObjectURL(data));
     // };
+
     if (!base64) return;
     const blob = base64StringToBlob(base64, "audio/wav");
     setAudioUrl(window.URL.createObjectURL(blob));
@@ -134,7 +136,8 @@ function Droplet({ title, author, createdAt, tags, base64 }: Droplet) {
           <IonText className="author-text">{author}</IonText>
           <audio src={audioUrl} controls></audio>
         </IonCardContent>
-        <IonNote>{tags?.map((tag) => `${tag}, `)}</IonNote>
+        <IonNote>{tags.length}</IonNote>
+        <IonNote>{tags.map((tag) => `${tag}, `)}</IonNote>
       </IonCard>
     </IonItem>
   );

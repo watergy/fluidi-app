@@ -32,6 +32,7 @@
     "cordova-plugin-media-capture": "^3.0.3",
     "gun": "^0.2020.1232",
     "ionicons": "^5.4.0",
+    "iris-lib": "^0.0.158",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "mic-recorder-to-mp3": "^2.2.2",
@@ -95,8 +96,7 @@
     "@types/dom-mediacapture-record": "^1.0.10",
     "@types/jquery": "^3.5.6",
     "@types/lodash": "^4.14.172",
-    "@types/webtorrent": "^0.109.1",
-    "iris-lib": "^0.0.158"
+    "@types/webtorrent": "^0.109.1"
   },
   "description": "An Ionic project"
 }
