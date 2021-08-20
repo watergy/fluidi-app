@@ -4,6 +4,7 @@ import { useVoiceRecorder } from "use-voice-recorder";
 import { IonButton, IonIcon } from "@ionic/react";
 import { recording, micOutline, micOffOutline } from "ionicons/icons";
 import WebTorrent from "webtorrent";
+import State from "../services/State";
 
 /*
     We will use WebTorrent for saving/retrieving our audio files.
@@ -56,12 +57,16 @@ const AudioRecorder = ({ setMagnetLink }: AudioRecorderProps) => {
   };
 
   const startLeeching = (magnetLink: string) => {
-    client.add(magnetLink, {}, (torrent) => {
-      console.log("started leeching", torrent);
-      torrent.files[0].getBlob((err, blob) => {
-        setLeechingTorrent(window.URL.createObjectURL(blob));
+    try {
+      client.add(magnetLink, {}, (torrent) => {
+        console.log("started leeching", torrent);
+        torrent.files[0].getBlob((err, blob) => {
+          setLeechingTorrent(window.URL.createObjectURL(blob));
+        });
       });
-    });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

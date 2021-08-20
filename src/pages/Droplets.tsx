@@ -21,6 +21,7 @@ import {
 import InfiniteScroll from "react-infinite-scroll-component";
 import ComposeDroplet from "../components/ComposeDroplet";
 import State from "../services/State";
+import WebTorrent from "webtorrent";
 
 interface Droplet {
   id: string;
@@ -46,6 +47,7 @@ function reducer(state: any, action: any) {
 
 const Droplets = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
   useEffect(() => {
     State.public
       .get("dropletss")
@@ -101,6 +103,26 @@ const Droplets = () => {
 };
 
 function Droplet({ title, author, createdAt, tags, magnetLink }: Droplet) {
+  const [audioUrl, setAudioUrl] = useState<string>();
+  const client = new WebTorrent();
+
+  const startLeeching = (magnetLink: string) => {
+    try {
+      client.add(magnetLink, {}, (torrent) => {
+        console.log("started leeching", torrent);
+        torrent.files[0].getBlob((err, blob) => {
+          setAudioUrl(window.URL.createObjectURL(blob));
+        });
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    startLeeching(magnetLink);
+  }, []);
+
   return (
     <IonItem>
       <IonCard>
@@ -108,8 +130,8 @@ function Droplet({ title, author, createdAt, tags, magnetLink }: Droplet) {
           <IonText>{title}</IonText>
         </IonCardHeader>
         <IonCardContent>
-          <IonText>{author}</IonText>
-          <IonText>{magnetLink}</IonText>
+          <IonText className="author-text">{author}</IonText>
+          <audio src={audioUrl} controls></audio>
         </IonCardContent>
         <IonNote>{tags?.map((tag) => `${tag}, `)}</IonNote>
       </IonCard>
