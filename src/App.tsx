@@ -38,6 +38,8 @@ import Droplets from "./pages/Droplets";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
 import Waves from "./pages/Waves";
+import TorrentMachine from "./services/WebTorrent";
+import Whirlpool from "./pages/Whirlpool";
 
 State.init({});
 Session.init({ autologin: window.location.pathname.length > 2 });
@@ -46,6 +48,7 @@ PeerManager.init();
 const App: React.FC = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
+    TorrentMachine.init({});
     // set listeners for some state changes
     State.local.get("loggedIn").on((ack: any) => {
       setLoggedIn(Boolean(ack)); // in case we get some other data type for some reason. shouldn't happen. probably would be fine even if it did beacause it would be truthy. why risk it? easier to just wrap it in a Boolean constructor and write this comment
@@ -71,8 +74,11 @@ const App: React.FC = () => {
             <Route exact path="/profile">
               <Profile />
             </Route>
+            <Route exact path="/whirlpool">
+              <Whirlpool />
+            </Route>
             <Route exact path="/">
-              <Redirect to="/droplets" />
+              <Redirect to="/whirlpool" />
             </Route>
           </IonRouterOutlet>
           <IonTabBar slot="bottom">

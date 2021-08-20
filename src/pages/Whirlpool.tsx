@@ -1,126 +1,73 @@
-import { useEffect, useState } from "react";
-import { IonButton, IonInput, IonPage, IonText, IonTitle } from "@ionic/react";
-import { v4 as uuidv4 } from "uuid";
-import Gun from "gun";
-import State from "../services/State";
+import { useEffect, useState, useReducer } from "react";
+import {
+  IonButton,
+  IonCard,
+  IonInput,
+  IonPage,
+  IonText,
+  IonTitle,
+} from "@ionic/react";
 
-const peerConnection = new RTCPeerConnection();
-const SEA = Gun.SEA;
+interface State {
+  recordedChunks: any[];
+}
 
+const initialState: State = {
+  recordedChunks: [],
+};
+
+const reducer = (state: State, chunk: any) => {
+  return {
+    recordedChunks: [...state.recordedChunks, chunk],
+  };
+};
+let recorder: MediaRecorder;
 const Whirlpool = () => {
-  const [myId, setMyId] = useState("");
-  const [password, setPassword] = useState("");
+  const [videoSrc, setVideoSrc] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(() => {
-    const id = uuidv4();
-    setMyId(id);
-    console.log(id);
-    State.public
-      .get(id)
-      .get("answers")
-      .on((encryptedAnswer) => {
-        console.log("encryptedAnswer!\n", encryptedAnswer);
-        const password = prompt("enter the password. again. sorry...") || "";
-        console.log("password", password);
-        SEA.decrypt(encryptedAnswer, password).then((answer) => {
-          console.log("cleartext answer", answer);
-          // @ts-ignore
-          peerConnection.setRemoteDescription(answer);
+  const handleMedia = (stream: MediaStream) => {
+    // convert the stream to a blob
+    console.log(stream);
+    const superBuffer = new Blob(state.recordedChunks);
+    setVideoSrc(window.URL.createObjectURL(superBuffer));
 
-          // we need to get the ice candidates now
-          // ...
-
-          // NOW we can start doing peer to peer stuff, I think
-          startChatting();
-        });
-      });
-  }, []);
-
-  async function startCall() {
     try {
-      const _password = prompt("enter a password");
-      setPassword(_password as string);
-      // create an offer and set the local description
-      const description = await peerConnection.createOffer({
-        offerToReceiveVideo: true,
-        offerToReceiveAudio: true,
-      });
-      await peerConnection.setLocalDescription(description);
-      // save the description to GUN. It's important that we encrypt this because our local IP address will be exposed in the description
-      const encryptedDescription = await SEA.encrypt(description, password);
-      console.log(encryptedDescription);
-      State.public
-        .get(myId)
-        .get("offer")
-        // @ts-ignore
-        .put(encryptedDescription);
+      recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
     } catch (err) {
       console.error(err);
+      alert(err);
+      return;
     }
-  }
 
-  async function joinCall() {
-    const friendId = prompt("enter your friend's id") || "";
-    State.public
-      .get(friendId)
-      .get("offer")
-      .on((encryptedDescription) => {
-        console.log(encryptedDescription);
-        const password = prompt("enter the passphrase") || "";
-        SEA.decrypt(encryptedDescription, password).then(
-          (cleartextDescription) => {
-            console.log(cleartextDescription);
-            if (cleartextDescription) {
-              // @ts-ignore
-              peerConnection.setRemoteDescription(cleartextDescription);
-              peerConnection
-                .createAnswer({
-                  offerToReceiveAudio: true,
-                  offerToReceiveVideo: true,
-                })
-                .then((answer) => {
-                  console.log(answer);
-                  peerConnection.setLocalDescription(answer);
-                  SEA.encrypt(answer, password).then((encryptedAnswer) => {
-                    State.public
-                      .get(friendId)
-                      .get("answers")
-                      // @ts-ignore
-                      .put(encryptedAnswer);
-                  });
-                });
-            }
-          }
-        );
-      });
-  }
+    recorder.ondataavailable = (event) => {
+      console.log(" Recorded chunk of size " + event.data.size + "B");
+      dispatch(event.data);
+    };
 
-  async function startChatting() {
-    navigator.getUserMedia(
-      { audio: true },
-      (stream) => {
-        const recorder = new MediaRecorder(stream);
-        recorder.start(1500);
-        recorder.addEventListener("dataavailable", (blobEvent) => {
-          console.log(blobEvent);
-        });
-        setTimeout(() => {
-          recorder.stop();
-        }, 5000);
-      },
-      (err) => {
+    recorder.start(100);
+  };
+
+  const startStreaming = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then(handleMedia)
+      .catch((err) => {
         console.error(err);
-      }
-    );
-  }
+        alert(err);
+      });
+  };
+
+  const stopStreaming = () => {
+    recorder.stop();
+  };
 
   return (
     <IonPage>
       <IonTitle>Whirlpool</IonTitle>
-      <IonText>your id: {myId}</IonText>
-      <video id="video" />
-      <IonButton onClick={startCall}>Start a call</IonButton>
-      <IonButton onClick={joinCall}>Join a call</IonButton>
+      <video src={videoSrc} controls />
+      <IonButton onClick={startStreaming}>Start streaming</IonButton>
+      <IonButton onClick={stopStreaming}>Stop streaming</IonButton>
     </IonPage>
   );
 };
