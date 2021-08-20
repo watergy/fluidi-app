@@ -23,12 +23,11 @@ import State from "../services/State";
 */
 
 interface AudioRecorderProps {
-  setMagnetLink: (magnetLink: string) => void;
+  setAudioBuffer: (buffer: Buffer) => void;
 }
 
-const AudioRecorder = ({ setMagnetLink }: AudioRecorderProps) => {
+const AudioRecorder = ({ setAudioBuffer }: AudioRecorderProps) => {
   const [record, setRecord] = useState<string>("");
-  const [audioBuffer, setAudioBuffer] = useState<Buffer>();
   const [leechingTorrent, setLeechingTorrent] = useState<string>();
   const [dspeed, setDspeed] = useState(0);
   const { isRecording, stop, start } = useVoiceRecorder(async (data) => {
@@ -45,30 +44,6 @@ const AudioRecorder = ({ setMagnetLink }: AudioRecorderProps) => {
     setDspeed(client.downloadSpeed);
   }, [client.downloadSpeed]);
 
-  const startSeeding = () => {
-    if (!audioBuffer) return;
-    // client.seed("", {}, (torrent) => {});
-    console.log(audioBuffer);
-    client.seed(audioBuffer, {}, (torrent) => {
-      console.log("torrent is created and seeding!", torrent);
-      console.log("magnet link\n", torrent.magnetURI);
-      setMagnetLink(torrent.magnetURI);
-    });
-  };
-
-  const startLeeching = (magnetLink: string) => {
-    try {
-      client.add(magnetLink, {}, (torrent) => {
-        console.log("started leeching", torrent);
-        torrent.files[0].getBlob((err, blob) => {
-          setLeechingTorrent(window.URL.createObjectURL(blob));
-        });
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
     <div className={"container"}>
       <h1>{dspeed}</h1>
@@ -81,20 +56,6 @@ const AudioRecorder = ({ setMagnetLink }: AudioRecorderProps) => {
         <IonIcon icon={isRecording ? micOutline : micOffOutline} />
         {isRecording ? "red means recording" : "not recording"}
       </IonButton>
-      <IonButton onClick={startSeeding}>
-        Start seeding your audio file
-      </IonButton>
-      <div>
-        <audio src={leechingTorrent} controls />
-        <h1>ELLO</h1>
-        <IonButton
-          onClick={() => {
-            startLeeching(prompt("enter link") as string);
-          }}
-        >
-          start leeching
-        </IonButton>
-      </div>
     </div>
   );
 };

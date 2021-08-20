@@ -25,6 +25,7 @@ import AudioSpectrum from "react-audio-spectrum";
 // @ts-ignore
 // import AudioReactRecorder, { RecordState } from "audio-react-recorder";
 import { Recorder } from "react-voice-recorder";
+import WebTorrent from "webtorrent";
 import "react-voice-recorder/dist/index.css";
 import State from "../services/State";
 import VoiceRecorder from "./AudioRecorder";
@@ -39,26 +40,12 @@ const ComposeDroplet = () => {
   const [errorText, setErrorText] = useState("");
   const [audioSrc, setAudioSrc]: any = useState("");
   const [recorder, setRecorder] = useState<MediaRecorder>();
-  const [magnetLink, setMagnetLink] = useState<string>();
+  const [audioBuffer, setAudioBuffer] = useState<Buffer>();
+  const client = new WebTorrent();
 
   return (
     <IonCard>
-      {/* <AudioReactRecorder state={recordState} onStop={stopRecording} /> */}
-
-      {/* <h1>
-        note, audio recording is not currently enabled. coming soon. for now,
-        please click the button below and upload an audio file
-      </h1> */}
-
-      {/* {audioFile && (
-        <AudioSpectrum
-          height={200}
-          width={300}
-          audioElement={new Audio(audioFile)}
-        />
-      )} */}
-
-      <VoiceRecorder setMagnetLink={setMagnetLink} />
+      <VoiceRecorder setAudioBuffer={setAudioBuffer} />
       <br />
       <IonLabel>Title</IonLabel>
       <IonInput
@@ -93,24 +80,28 @@ const ComposeDroplet = () => {
       <IonButton
         onClick={(e) => {
           e.preventDefault();
-          // @ts-ignore
-          try {
-            State.public.get("dropletssss").set({
-              //@ts-ignore
-              title,
-              //@ts-ignore
-              tags,
-              //@ts-ignore
-              author: "me",
-              //@ts-ignore
-              createdAt: Date.now(),
-              //@ts-ignore
-              magnetLink,
-            });
-          } catch (err) {
-            console.error(err);
-            alert(err);
-          }
+          client.seed(audioBuffer!, {}, (torrent) => {
+            console.log("torrent is created and seeding!", torrent);
+            console.log("magnet link\n", torrent.magnetURI);
+            // @ts-ignore
+            try {
+              State.public.get("dropletsssss").set({
+                //@ts-ignore
+                title,
+                //@ts-ignore
+                tags,
+                //@ts-ignore
+                author: "me",
+                //@ts-ignore
+                createdAt: Date.now(),
+                //@ts-ignore
+                magnetLink: torrent.magnetURI,
+              });
+            } catch (err) {
+              console.error(err);
+              alert(err);
+            }
+          });
         }}
       >
         Click here to submit your droplet
