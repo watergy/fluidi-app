@@ -40,6 +40,7 @@ import Profile from "./pages/Profile";
 import Waves from "./pages/Waves";
 import TorrentMachine from "./services/WebTorrent";
 import Whirlpool from "./pages/Whirlpool";
+import Waterfall from "./pages/Waterfall";
 
 State.init({});
 Session.init({ autologin: window.location.pathname.length > 2 });
@@ -77,8 +78,11 @@ const App: React.FC = () => {
             <Route exact path="/whirlpool">
               <Whirlpool />
             </Route>
+            <Route exact path="/waterfall">
+              <Waterfall />
+            </Route>
             <Route exact path="/">
-              <Redirect to="/whirlpool" />
+              <Redirect to="/waterfall" />
             </Route>
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
