@@ -62,23 +62,24 @@ const Waterfall = () => {
 
   const startStreaming = async () => {
     const stream = await getVideoStream();
-    const peer = new Peer();
-    peer.on("open", () => {
-      alert("click");
-      peer.call("poopyhead22", stream!);
+    const peer = new Peer("therealone9991991");
+    peer.on("call", (call) => {
+      alert(call);
+      call.answer(stream);
     });
+    // peer.on("open", () => {
+    //   alert("click");
+    //   peer.call("poopyhead22", stream!);
+    // });
   };
 
   const startListening = async () => {
     const audioTrack = createEmptyAudioTrack();
     const videoTrack = createEmptyVideoTrack({ width: 640, height: 480 });
     const mediaStream = new MediaStream([audioTrack, videoTrack]);
-    const peer = new Peer("poopyhead22");
-    console.log(peer);
-
-    peer.on("call", (call) => {
-      console.log(call);
-      call.answer();
+    const peer = new Peer();
+    peer.on("open", () => {
+      const call = peer.call("therealone9991991", mediaStream);
       call.on("stream", (stream) => {
         console.log(stream);
         if (myVideoRef.current) {
@@ -86,6 +87,19 @@ const Waterfall = () => {
         }
       });
     });
+    // const peer = new Peer("poopyhead22");
+    // console.log(peer);
+
+    // peer.on("call", (call) => {
+    //   console.log(call);
+    //   call.answer(mediaStream);
+    //   call.on("stream", (stream) => {
+    //     console.log(stream);
+    //     if (myVideoRef.current) {
+    //       myVideoRef.current.srcObject = stream;
+    //     }
+    //   });
+    // });
   };
 
   return (
