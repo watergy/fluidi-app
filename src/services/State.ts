@@ -14,10 +14,7 @@ const State: IState = {
     Gun.log.off = true;
     const o = Object.assign(
       {
-        peers: [
-          "https://gun-us.herokuapp.com/gun",
-          "https://stormy-shore-24031.herokuapp.com/gun",
-        ],
+        peers: ["https://gun-us.herokuapp.com/gun"],
         localStorage: false,
         retry: Infinity,
       },
