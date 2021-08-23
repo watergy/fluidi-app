@@ -67,13 +67,29 @@ const Waterfall = () => {
       alert(call);
       call.answer(stream);
     });
-    // peer.on("open", () => {
-    //   alert("click");
-    //   peer.call("poopyhead22", stream!);
-    // });
   };
 
   const startListening = async () => {
+    const audioTrack = createEmptyAudioTrack();
+    const videoTrack = createEmptyVideoTrack({ width: 640, height: 480 });
+    const mediaStream = new MediaStream([audioTrack, videoTrack]);
+    const peer = new Peer("bobbobbobbobbobbobbob");
+    peer.on("open", () => {
+      const call = peer.call("therealone9991991", mediaStream);
+      call.on("stream", (stream) => {
+        console.log(stream);
+        if (myVideoRef.current) {
+          myVideoRef.current.srcObject = stream;
+        }
+        // for when someone calls bob to listen to alice
+        peer.on("call", (call) => {
+          alert(call);
+          call.answer(stream);
+        });
+      });
+    });
+  };
+  const startListeningToAlice = async () => {
     const audioTrack = createEmptyAudioTrack();
     const videoTrack = createEmptyVideoTrack({ width: 640, height: 480 });
     const mediaStream = new MediaStream([audioTrack, videoTrack]);
@@ -85,21 +101,29 @@ const Waterfall = () => {
         if (myVideoRef.current) {
           myVideoRef.current.srcObject = stream;
         }
+        // for when someone calls bob to listen to alice
+        peer.on("call", (call) => {
+          alert(call);
+          call.answer(stream);
+        });
       });
     });
-    // const peer = new Peer("poopyhead22");
-    // console.log(peer);
+  };
 
-    // peer.on("call", (call) => {
-    //   console.log(call);
-    //   call.answer(mediaStream);
-    //   call.on("stream", (stream) => {
-    //     console.log(stream);
-    //     if (myVideoRef.current) {
-    //       myVideoRef.current.srcObject = stream;
-    //     }
-    //   });
-    // });
+  const startListeningToBob = async () => {
+    const audioTrack = createEmptyAudioTrack();
+    const videoTrack = createEmptyVideoTrack({ width: 640, height: 480 });
+    const mediaStream = new MediaStream([audioTrack, videoTrack]);
+    const peer = new Peer();
+    peer.on("open", () => {
+      const call = peer.call("bobbobbobbobbobbobbob", mediaStream);
+      call.on("stream", (stream) => {
+        console.log(stream);
+        if (myVideoRef.current) {
+          myVideoRef.current.srcObject = stream;
+        }
+      });
+    });
   };
 
   return (
@@ -110,12 +134,15 @@ const Waterfall = () => {
       <IonContent>
         <video ref={myVideoRef} controls />
         <IonButton onClick={startStreaming}>Start streaming</IonButton>
-        <IonList>
-          <IonItem>
-            <IonInput />
-            <IonButton onClick={startListening}>Start listening</IonButton>
-          </IonItem>
-        </IonList>
+        <IonButton onClick={startListening}>
+          Start listening and become bob
+        </IonButton>
+        <IonButton onClick={startListeningToAlice}>
+          Start listening to alice
+        </IonButton>
+        <IonButton onClick={startListeningToBob}>
+          Start listening to Bob
+        </IonButton>
         <IonText>{errorText.toString()}</IonText>
       </IonContent>
     </IonPage>
